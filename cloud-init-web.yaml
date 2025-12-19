@@ -1,0 +1,18 @@
+#cloud-config
+package_update: true
+packages:
+  - apache2
+  - curl
+  - unzip
+  - net-tools
+  - htop
+  - git
+runcmd:
+  # Create a simple index.html page
+  - [ sh, -c, 'echo "<html><body><h1>Apache on $(hostname)</h1></body></html>" > /var/www/html/index.html' ]
+  # Enable and start Apache
+  - [ systemctl, enable, apache2 ]
+  - [ systemctl, start, apache2 ]
+  # Install Azure CLI
+  - [ sh, -c, 'curl -sL https://aka.ms/InstallAzureCL
+
