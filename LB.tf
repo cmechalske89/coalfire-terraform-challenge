@@ -1,6 +1,6 @@
- # public IP + LB + probe + rule + BE pool assoc
+# public IP + LB + probe + rule + BE pool assoc
 
- 
+
 ############################################
 # Public IP for the Load Balancer (Standard, Static)
 ############################################
@@ -10,8 +10,8 @@ resource "azurerm_public_ip" "lb_pip" {
   resource_group_name = azurerm_resource_group.rg.name
   location            = var.location
 
-  allocation_method   = "Static"
-  sku                 = "Standard"
+  allocation_method = "Static"
+  sku               = "Standard"
 
   tags = {
     OwnerRG = var.resource_group_name
@@ -26,7 +26,7 @@ resource "azurerm_public_ip" "lb_pip" {
 
 resource "azurerm_lb" "lb" {
   name                = var.lb_name
-  resource_group_name = azurerm_resource_group.rg.name   # ✅ keep here
+  resource_group_name = azurerm_resource_group.rg.name # ✅ keep here
   location            = var.location
   sku                 = "Standard"
 
@@ -47,7 +47,7 @@ resource "azurerm_lb" "lb" {
 
 resource "azurerm_lb_backend_address_pool" "lb_bepool" {
   name            = "web-backend"
-  loadbalancer_id = azurerm_lb.lb.id                      # ✅ RG is implied by LB ID
+  loadbalancer_id = azurerm_lb.lb.id # ✅ RG is implied by LB ID
 }
 
 ############################################
@@ -56,7 +56,7 @@ resource "azurerm_lb_backend_address_pool" "lb_bepool" {
 
 resource "azurerm_lb_probe" "lb_probe_http" {
   name            = "http-80"
-  loadbalancer_id = azurerm_lb.lb.id                      
+  loadbalancer_id = azurerm_lb.lb.id
   protocol        = "Tcp"
   port            = var.lb_http_backend_port
 }
@@ -67,11 +67,11 @@ resource "azurerm_lb_probe" "lb_probe_http" {
 
 resource "azurerm_lb_rule" "lb_rule_http" {
   name                           = "http"
-  loadbalancer_id                = azurerm_lb.lb.id       
+  loadbalancer_id                = azurerm_lb.lb.id
   protocol                       = "Tcp"
   frontend_port                  = var.lb_http_frontend_port
   backend_port                   = var.lb_http_backend_port
-   frontend_ip_configuration_name = var.lb_frontend_name
+  frontend_ip_configuration_name = var.lb_frontend_name
   backend_address_pool_ids       = [azurerm_lb_backend_address_pool.lb_bepool.id]
   probe_id                       = azurerm_lb_probe.lb_probe_http.id
 

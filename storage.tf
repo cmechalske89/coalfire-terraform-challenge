@@ -15,15 +15,15 @@ resource "azurerm_storage_account" "sa" {
 
   # Network rules: allow only the Management subnet
   network_rules {
-    default_action             = "Deny"              # deny everyone by default
-    bypass                     = ["AzureServices"]   # permit Azure platform services where needed
+    default_action             = "Deny"            # deny everyone by default
+    bypass                     = ["AzureServices"] # permit Azure platform services where needed
     virtual_network_subnet_ids = [azurerm_subnet.subnet_mgmt.id]
     # You can add ip_rules = ["x.x.x.x"] if you also need an admin exception from a public IP
   }
 
   # (Optional but recommended) enforce HTTPS
   https_traffic_only_enabled = true
-  min_tls_version           = "TLS1_2"
+  min_tls_version            = "TLS1_2"
 
   tags = {
     OwnerRG = var.resource_group_name
@@ -38,6 +38,6 @@ resource "azurerm_storage_account" "sa" {
 resource "azurerm_storage_container" "containers" {
   for_each              = toset(var.storage_containers)
   name                  = each.key
-  storage_account_id  = azurerm_storage_account.sa.id
+  storage_account_id    = azurerm_storage_account.sa.id
   container_access_type = "private"
 }

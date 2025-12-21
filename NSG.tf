@@ -10,9 +10,9 @@ resource "azurerm_network_security_group" "nsg_mgmt" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-tags = {
+  tags = {
     OwnerRG = var.resource_group_name
-       Role    = "mgmt"
+    Role    = "mgmt"
   }
 
   # Allow SSH from your admin CIDR
@@ -48,9 +48,9 @@ resource "azurerm_network_security_group" "nsg_web" {
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
 
-tags = {
+  tags = {
     OwnerRG = var.resource_group_name
-       Role    = "web"
+    Role    = "web"
   }
 
   # Allow HTTP (80) from Azure Load Balancer (covers health probes and client traffic via LB)
@@ -104,5 +104,5 @@ resource "azurerm_subnet_network_security_group_association" "assoc_mgmt" {
 
 resource "azurerm_subnet_network_security_group_association" "assoc_web" {
   subnet_id                 = azurerm_subnet.subnet_web.id
-  network_security_group_id = azurerm_network_security_group.nsg_web.id  
+  network_security_group_id = azurerm_network_security_group.nsg_web.id
 }

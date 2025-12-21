@@ -1,4 +1,4 @@
- # web NICs + VMs
+# web NICs + VMs
 
 
 ############################################
@@ -55,13 +55,15 @@ resource "azurerm_linux_virtual_machine" "vm_web" {
   # We are enforcing SSH key-only auth (no passwords)
   disable_password_authentication = true
 
+
   dynamic "admin_ssh_key" {
     for_each = var.ssh_public_key == null ? [] : [var.ssh_public_key]
     content {
       username   = var.admin_username
-      public_key = file(admin_ssh_key.value)
+      public_key = file(pathexpand(admin_ssh_key.value)) # ✅ expands "~" to your home directory
     }
   }
+
 
   os_disk {
     caching              = "ReadWrite"
@@ -78,7 +80,7 @@ resource "azurerm_linux_virtual_machine" "vm_web" {
   # Cloud-init to install Apache and write a simple index.html
   # Terraform docs support cloud-init via base64-encoded custom_data
   #   (we use filebase64 to read your YAML file)
-  custom_data = filebase64(var.cloud_init_web_path)
+  custom_data = filebase64(local.cloud_init_web_path)
 
   tags = {
     OwnerRG = var.resource_group_name

@@ -76,11 +76,14 @@ variable "web_vm_size" {
 }
 
 # Path to the cloud-init file used to install Apache on web VMs
-# Put this YAML under scripts/cloud-init-web.yaml
+
 variable "cloud_init_web_path" {
-  type    = string
-  default = "${path.module}/../scripts/cloud-init-web.yaml"
+  description = "Optional override for the web VM cloud-init YAML path."
+  type        = string
+  default     = null
 }
+
+
 
 # Number of web VMs (keep 2 for the challenge)
 variable "web_vm_count" {
@@ -132,3 +135,14 @@ variable "storage_replication_type" {
   type    = string
   default = "GRS" # Valid: LRS, GRS, RAGRS, ZRS, GZRS, RAGZRS
 }
+
+#locals
+
+
+locals {
+  cloud_init_web_path = coalesce(
+    var.cloud_init_web_path,
+    "${path.module}/cloud-init-web.yaml"
+  )
+}
+

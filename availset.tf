@@ -16,5 +16,5 @@ resource "azurerm_availability_set" "web_as" {
   tags = {
     OwnerRG = var.resource_group_name
     Role    = "web"
-   }
+  }
 }
