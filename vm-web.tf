@@ -40,14 +40,19 @@ resource "azurerm_network_interface_backend_address_pool_association" "web_nic_l
 # - Apache installed via cloud-init YAML
 ############################################
 
+
 resource "azurerm_linux_virtual_machine" "vm_web" {
-  count                 = var.web_vm_count
-  name                  = "${var.resource_group_name}-vm-web-${count.index}"
-  resource_group_name   = azurerm_resource_group.rg.name
-  location              = var.location
-  size                  = var.web_vm_size
-  admin_username        = var.admin_username
+  count               = var.web_vm_count
+
+  # Sanitize RG name: lowercase and replace underscores with hyphens
+  name                = "${replace(lower(var.resource_group_name), "_", "-")}-vm-web-${count.index}"
+
+  resource_group_name = azurerm_resource_group.rg.name
+  location            = var.location
+  size                = var.web_vm_size
+  admin_username      = var.admin_username
   network_interface_ids = [azurerm_network_interface.nic_web[count.index].id]
+
 
   # Place VMs in your Availability Set
   availability_set_id = azurerm_availability_set.web_as.id

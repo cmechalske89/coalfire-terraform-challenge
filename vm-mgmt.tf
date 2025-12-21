@@ -37,13 +37,17 @@ resource "azurerm_network_interface" "nic_mgmt" {
 }
 
 # Ubuntu 22.04 LTS management VM
+
 resource "azurerm_linux_virtual_machine" "vm_mgmt" {
-  name                  = "${var.resource_group_name}-vm-mgmt"
+  # Make the VM name Linux‑safe: lowercase and replace underscores with hyphens
+  name                  = "${replace(lower(var.resource_group_name), "_", "-")}-vm-mgmt"
+
   resource_group_name   = azurerm_resource_group.rg.name
   location              = var.location
   size                  = var.mgmt_vm_size
   admin_username        = var.admin_username
   network_interface_ids = [azurerm_network_interface.nic_mgmt.id]
+
 
   # If ssh_public_key is provided, use key auth
 
